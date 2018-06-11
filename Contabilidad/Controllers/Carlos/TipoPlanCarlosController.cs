@@ -99,13 +99,21 @@ namespace Contabilidad.Controllers.Carlos
         {
             try
             {
-                // TODO: Add insert logic here
+                if (ModelState.IsValid)
+                {
+                    oDAC.VM = oTipoPlan;
 
-                return RedirectToAction("Index");
+                    if (oDAC.Insert())
+                    {
+                        return RedirectToAction("Index");
+                    }
+                }
+
+                return View(oTipoPlan);
             }
-            catch
+            catch(Exception exp)
             {
-                return View();
+                return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = exp.Message });
             }
         }
 

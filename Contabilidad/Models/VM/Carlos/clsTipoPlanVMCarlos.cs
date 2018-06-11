@@ -9,13 +9,13 @@ namespace Contabilidad.Models.VM.Carlos
 {
     public class clsTipoPlanVMCarlos
     {
-        [Key]
+        [Key, Display(Name = "ID")]
         public long TipoPlanId { get; set; }
 
         [Required, StringLength(255), Display(Name ="Descripcion")]
         public string TipoPlanDes { get; set; }
 
-        [Required, Display(Name = "EstadoId")]
+        [Required, Display(Name = "Estado")]
         public long EstadoId { get; set; }
 
         [NotMapped, StringLength(255), Display(Name = "Estado")]

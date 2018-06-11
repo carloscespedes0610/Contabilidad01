@@ -332,6 +332,7 @@
     <Content Include="Views\CenCosGrupo\Edit.cshtml" />
     <Content Include="Views\CenCosGrupo\Delete.cshtml" />
     <Content Include="Views\CenCosGrupo\Details.cshtml" />
+    <Content Include="Views\TipoPlanCarlos\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -357,6 +358,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\Carlos\TipoPlanCarlosController.cs" />
     <Compile Include="Controllers\CenCosController.cs" />
     <Compile Include="Controllers\CenCosGrupoController.cs" />
     <Compile Include="Controllers\ComboBoxController.cs" />
@@ -423,7 +425,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\Carlos\" />
     <Folder Include="Views\ComboBox\" />
   </ItemGroup>
   <PropertyGroup>

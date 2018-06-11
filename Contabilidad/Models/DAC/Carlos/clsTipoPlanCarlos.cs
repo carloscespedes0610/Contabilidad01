@@ -387,6 +387,7 @@ namespace Contabilidad.Models.DAC.Carlos
                         VM.TipoPlanId = SysData.ToLong(oDataRow[clsTipoPlanVMCarlos._TipoPlanId]);
                         VM.TipoPlanDes = SysData.ToStr(oDataRow[clsTipoPlanVMCarlos._TipoPlanDes]);
                         break;
+
                 }
             }
 

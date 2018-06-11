@@ -1,6 +1,7 @@
 ﻿using Contabilidad.Models.VM.Carlos;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -177,8 +178,8 @@ namespace Contabilidad.Models.DAC.Carlos
         //************************************************************
         public clsTipoPlanCarlos()
         {
-            mstrTableName = "ctbCenCos";
-            mstrClassName = "clsCenCos";
+            mstrTableName = "ctbTipoPlan";
+            mstrClassName = "clsTipoPlanCarlos";
 
             PropertyInit();
             FilterInit();
@@ -236,40 +237,32 @@ namespace Contabilidad.Models.DAC.Carlos
         {
             string strSQL = null;
 
-            mstrStoreProcName = "ctbCenCosSelect";
+            mstrStoreProcName = "Carlos.ctbTipoPlanSelectCarlos";
 
             switch (mintSelectFilter)
             {
                 case SelectFilters.All:
                     strSQL = " SELECT  " +
-                           "    ctbCenCos.CenCosId, " +             //usar espacio
-                           "    ctbCenCos.CenCosCod, " +
-                           "    ctbCenCos.CenCosDes, " +
-                           "    ctbCenCos.CenCosEsp, " +
-                           "    ctbCenCos.CenCosGrupoId, " +
-                           "    ctbCenCos.EstadoId " +
-                           " FROM ctbCenCos ";
+                           "    ctbTipoPlan.TipoPlanId, " +             //usar espacio
+                           "    ctbTipoPlan.TipoPlanDes, " +
+                           "    ctbTipoPlan.EstadoId, " +
+                           " FROM ctbTipoPlan ";
                     break;
 
                 case SelectFilters.ListBox:
                     strSQL = " SELECT  " +
-                           "    ctbCenCos.CenCosId, " +
-                           "    ctbCenCos.CenCosCod, " +
-                           "    ctbCenCos.CenCosDes " +
-                           " FROM ctbCenCos ";
+                           "    ctbTipoPlan.TipoPlanId, " +
+                           "    ctbTipoPlan.TipoPlanDes, " +
+                           " FROM ctbTipoPlan ";
                     break;
 
                 case SelectFilters.Grid:
                     strSQL = " SELECT  " +
-                            "    ctbCenCos.CenCosId, " +
-                            "    ctbCenCos.CenCosCod, " +
-                            "    ctbCenCos.CenCosDes, " +
-                            "    ctbCenCos.CenCosEsp, " +
-                            "    ctbCenCosGrupo.CenCosGrupoId, " +
-                            "    ctbCenCosGrupo.CenCosGrupoDes, " +
-                            "    parEstado.EstadoId, " +
-                            "    parEstado.EstadoDes  " +
-                            " FROM ctbCenCos ";
+                           "    ctbTipoPlan.TipoPlanId, " +             //usar espacio
+                           "    ctbTipoPlan.TipoPlanDes, " +
+                           "    ctbTipoPlan.EstadoId, " +
+                           "    parEstado.EstadoDes  " +
+                           " FROM ctbTipoPlan ";
                     break;
 
                 case SelectFilters.GridCheck:
@@ -289,19 +282,19 @@ namespace Contabilidad.Models.DAC.Carlos
             switch (mintWhereFilter)
             {
                 case WhereFilters.PrimaryKey:
-                    strSQL = " WHERE CenCosId = " + SysData.NumberToField(VM.CenCosId);
+                    strSQL = " WHERE TipoPlanId = " + SysData.NumberToField(VM.TipoPlanId);
                     break;
 
-                case WhereFilters.CenCosDes:
+                case WhereFilters.TipoPlanDes:
+                    strSQL = " WHERE TipoPlanDes = " + SysData.StringToField(VM.TipoPlanDes);
                     break;
 
                 case WhereFilters.Grid:
-                    strSQL = " LEFT JOIN ctbCenCosGrupo ON ctbCenCos.CenCosGrupoId = ctbCenCosGrupo.CenCosGrupoId " +
-                            "  LEFT JOIN parEstado ON ctbCenCos.EstadoId = parEstado.EstadoId ";
+                    strSQL = " LEFT JOIN parEstado ON ctbTipoPlan.EstadoId = parEstado.EstadoId ";
                     break;
 
-                case WhereFilters.CenCosCod:
-                    strSQL = " WHERE CenCosCod = " + SysData.StringToField(VM.CenCosCod);
+                case WhereFilters.EstadoId:
+                    strSQL = " WHERE EstadoId = " + SysData.NumberToField(VM.EstadoId);
                     break;
 
                 case WhereFilters.GridCheck:
@@ -317,15 +310,15 @@ namespace Contabilidad.Models.DAC.Carlos
 
             switch (mintOrderByFilter)
             {
-                case OrderByFilters.CenCosId:
+                case OrderByFilters.TipoPlanId:
                     break;
 
-                case OrderByFilters.CenCosDes:
-                    strSQL = " ORDER BY ctbCenCos.CenCosDes ";
+                case OrderByFilters.TipoPlanDes:
+                    strSQL = " ORDER BY ctbTipoPlan.TipoPlanDes ";
                     break;
 
                 case OrderByFilters.Grid:
-                    strSQL = " ORDER BY ctbCenCosGrupo.CenCosGrupoDes, ctbCenCos.CenCosDes ";
+                    strSQL = " ORDER BY ctbTipoPlan.TipoPlanDes, parEstado.EstadoDes ";
                     break;
 
                 case OrderByFilters.GridCheck:
@@ -340,16 +333,12 @@ namespace Contabilidad.Models.DAC.Carlos
             switch (mintInsertFilter)
             {
                 case InsertFilters.All:
-                    mstrStoreProcName = "ctbCenCosInsert";
-                    moParameters = new SqlParameter[7] {
-                        new SqlParameter("@InsertFilter", mintInsertFilter),
+                    mstrStoreProcName = "Carlos.ctbTipoPlanInsertCarlos";
+                    moParameters = new SqlParameter[3] {
                         new SqlParameter("@Id", SqlDbType.Int),
-                        new SqlParameter(clsCenCosVM._CenCosCod, VM.CenCosCod),
-                        new SqlParameter(clsCenCosVM._CenCosDes, VM.CenCosDes),
-                        new SqlParameter(clsCenCosVM._CenCosEsp, VM.CenCosEsp),
-                        new SqlParameter(clsCenCosVM._CenCosGrupoId, VM.CenCosGrupoId),
-                        new SqlParameter(clsCenCosVM._EstadoId, VM.EstadoId)};
-                    moParameters[1].Direction = ParameterDirection.Output;
+                        new SqlParameter(clsTipoPlanVMCarlos._TipoPlanDes, VM.TipoPlanDes),
+                        new SqlParameter(clsTipoPlanVMCarlos._EstadoId, VM.EstadoId)};
+                    moParameters[0].Direction = ParameterDirection.Output;
                     break;
             }
         }
@@ -359,15 +348,11 @@ namespace Contabilidad.Models.DAC.Carlos
             switch (mintUpdateFilter)
             {
                 case UpdateFilters.All:
-                    mstrStoreProcName = "ctbCenCosUpdate";
-                    moParameters = new SqlParameter[7] {
-                        new SqlParameter("@UpdateFilter", mintUpdateFilter),
-                        new SqlParameter(clsCenCosVM._CenCosId, VM.CenCosId),
-                        new SqlParameter(clsCenCosVM._CenCosCod, VM.CenCosCod),
-                        new SqlParameter(clsCenCosVM._CenCosDes, VM.CenCosDes),
-                        new SqlParameter(clsCenCosVM._CenCosEsp, VM.CenCosEsp),
-                        new SqlParameter(clsCenCosVM._CenCosGrupoId, VM.CenCosGrupoId),
-                        new SqlParameter(clsCenCosVM._EstadoId, VM.EstadoId)};
+                    mstrStoreProcName = "Carlos.ctbTipoPlanUpdateCarlos";
+                    moParameters = new SqlParameter[3] {
+                        new SqlParameter(clsTipoPlanVMCarlos._TipoPlanId, VM.TipoPlanId),
+                        new SqlParameter(clsTipoPlanVMCarlos._TipoPlanDes, VM.TipoPlanDes),
+                        new SqlParameter(clsTipoPlanVMCarlos._EstadoId, VM.EstadoId)};
                     break;
             }
         }
@@ -377,10 +362,9 @@ namespace Contabilidad.Models.DAC.Carlos
             switch (mintDeleteFilter)
             {
                 case DeleteFilters.All:
-                    mstrStoreProcName = "ctbCenCosDelete";
-                    moParameters = new SqlParameter[2] {
-                        new SqlParameter("@DeleteFilter", mintDeleteFilter),
-                        new SqlParameter(clsCenCosVM._CenCosId, VM.CenCosId)};
+                    mstrStoreProcName = "Carlos.ctbTipoPlanDeleteCarlos";
+                    moParameters = new SqlParameter[1] {
+                        new SqlParameter(clsTipoPlanVMCarlos._TipoPlanId, VM.TipoPlanId)};
                     break;
             }
         }
@@ -394,18 +378,14 @@ namespace Contabilidad.Models.DAC.Carlos
                 switch (mintSelectFilter)
                 {
                     case SelectFilters.All:
-                        VM.CenCosId = SysData.ToLong(oDataRow[clsCenCosVM._CenCosId]);
-                        VM.CenCosCod = SysData.ToStr(oDataRow[clsCenCosVM._CenCosCod]);
-                        VM.CenCosDes = SysData.ToStr(oDataRow[clsCenCosVM._CenCosDes]);
-                        VM.CenCosEsp = SysData.ToStr(oDataRow[clsCenCosVM._CenCosEsp]);
-                        VM.CenCosGrupoId = SysData.ToLong(oDataRow[clsCenCosVM._CenCosGrupoId]);
-                        VM.EstadoId = SysData.ToLong(oDataRow[clsCenCosVM._EstadoId]);
+                        VM.TipoPlanId = SysData.ToLong(oDataRow[clsTipoPlanVMCarlos._TipoPlanId]);
+                        VM.TipoPlanDes = SysData.ToStr(oDataRow[clsTipoPlanVMCarlos._TipoPlanDes]);
+                        VM.EstadoId= SysData.ToLong(oDataRow[clsTipoPlanVMCarlos._EstadoId]);
                         break;
 
                     case SelectFilters.ListBox:
-                        VM.CenCosId = SysData.ToLong(oDataRow[clsCenCosVM._CenCosId]);
-                        VM.CenCosCod = SysData.ToStr(oDataRow[clsCenCosVM._CenCosCod]);
-                        VM.CenCosDes = SysData.ToStr(oDataRow[clsCenCosVM._CenCosDes]);
+                        VM.TipoPlanId = SysData.ToLong(oDataRow[clsTipoPlanVMCarlos._TipoPlanId]);
+                        VM.TipoPlanDes = SysData.ToStr(oDataRow[clsTipoPlanVMCarlos._TipoPlanDes]);
                         break;
                 }
             }
@@ -418,30 +398,11 @@ namespace Contabilidad.Models.DAC.Carlos
 
         public override bool Validate()
         {
-            bool returnValue = false;
-            string strMsg = string.Empty;
+            // no existe ninguna verificacion extra
+            // aparte de las condiciones de DataNotacion
 
-            if (VM.CenCosCod.Length == 0)
-            {
-                strMsg += "Código es Requerido" + Environment.NewLine;
-            }
+            return true;
 
-            if (VM.CenCosDes.Length == 0)
-            {
-                strMsg += "Descipción del Tipo Usuario es Requerido" + Environment.NewLine;
-            }
-
-            if (strMsg.Trim() != string.Empty)
-            {
-                returnValue = false;
-                throw (new Exception(strMsg));
-            }
-            else
-            {
-                returnValue = true;
-            }
-
-            return returnValue;
         }
 
         public bool FindByPK()

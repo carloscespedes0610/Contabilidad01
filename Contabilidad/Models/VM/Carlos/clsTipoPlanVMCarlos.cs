@@ -16,15 +16,15 @@ namespace Contabilidad.Models.VM.Carlos
         public string TipoPlanDes { get; set; }
 
         [Required, Display(Name = "EstadoId")]
-        public int EstadoId { get; set; }
+        public long EstadoId { get; set; }
 
         [NotMapped, StringLength(255), Display(Name = "Estado")]
         public string EstadoDes { get; set; }
 
-        public static string var_TipoPlanId = nameof(TipoPlanId);
-        public static string var_TipoPlanDes = nameof(TipoPlanDes);
-        public static string var_EstadoId = nameof(EstadoId);
-        public static string var_EstadoDes = nameof(EstadoDes);
+        public static string _TipoPlanId = nameof(TipoPlanId);
+        public static string _TipoPlanDes = nameof(TipoPlanDes);
+        public static string _EstadoId = nameof(EstadoId);
+        public static string _EstadoDes = nameof(EstadoDes);
 
     }
 }

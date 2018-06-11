@@ -336,6 +336,7 @@
     <Content Include="Views\TipoPlanCarlos\Details.cshtml" />
     <Content Include="Views\TipoPlanCarlos\Create.cshtml" />
     <Content Include="Views\TipoPlanCarlos\Edit.cshtml" />
+    <Content Include="Views\TipoPlanCarlos\Delete.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

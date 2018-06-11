@@ -95,6 +95,7 @@ namespace Contabilidad.Controllers.Carlos
 
         // POST: TipoPlanCarlos/Create
         [HttpPost]
+        [ValidateAntiForgeryToken()]
         public ActionResult Create(clsTipoPlanVMCarlos oTipoPlan)
         {
             try
@@ -118,7 +119,7 @@ namespace Contabilidad.Controllers.Carlos
         }
 
         // GET: TipoPlanCarlos/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
             try
             {
@@ -143,6 +144,7 @@ namespace Contabilidad.Controllers.Carlos
 
         // POST: TipoPlanCarlos/Edit/5
         [HttpPost]
+        [ValidateAntiForgeryToken()]
         public ActionResult Edit(clsTipoPlanVMCarlos oTipoPlan)
         {
             try
@@ -163,24 +165,55 @@ namespace Contabilidad.Controllers.Carlos
         }
 
         // GET: TipoPlanCarlos/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int? id)
         {
-            return View();
+            try
+            {
+                if (ReferenceEquals(id, null))
+                {
+                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Índice nulo o no encontrado" });
+                }
+
+                clsTipoPlanVMCarlos oVM = oDAC.FindByPK(SysData.ToLong(id));
+
+                if (ReferenceEquals(oVM, null))
+                {
+                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Tipo de Plan no encontrado" });
+                }
+
+                return View(oVM);
+
+            }
+            catch (Exception exp)
+            {
+                return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = exp.Message });
+            }
         }
 
         // POST: TipoPlanCarlos/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [ActionName("Delete")]
+        [ValidateAntiForgeryToken()]
+        public ActionResult DeleteConfirmed(int? id)
         {
             try
             {
-                // TODO: Add delete logic here
+                if (ReferenceEquals(id, null)) {
+                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Índice nulo o no encontrado" });
+                }
 
-                return RedirectToAction("Index");
+                oDAC.VM.TipoPlanId = SysData.ToLong(id);
+
+                if (oDAC.Delete()) {
+                    return RedirectToAction("Index");
+                }
+
+                return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Error al Eliminar el Registro" });
             }
-            catch
+            catch (Exception exp)
             {
-                return View();
+
+                return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = exp.Message });
             }
         }
     }

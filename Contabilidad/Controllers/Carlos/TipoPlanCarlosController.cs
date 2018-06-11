@@ -120,22 +120,45 @@ namespace Contabilidad.Controllers.Carlos
         // GET: TipoPlanCarlos/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            try
+            {
+                if (ReferenceEquals(id, null)) {
+                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Índice nulo o no encontrado" });
+                }
+
+                clsTipoPlanVMCarlos oVM = oDAC.FindByPK(SysData.ToLong(id));
+
+                if (ReferenceEquals(oVM, null)) {
+                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Tipo de Plan no encontrado" });
+                }
+
+                return View(oVM);
+
+            }
+            catch (Exception exp)
+            {
+                return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = exp.Message });
+            }
         }
 
         // POST: TipoPlanCarlos/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(clsTipoPlanVMCarlos oTipoPlan)
         {
             try
             {
-                // TODO: Add update logic here
+                if (ModelState.IsValid) {
+                    oDAC.VM = oTipoPlan;
+                    if (oDAC.Update()) {
+                        return RedirectToAction("Details",new { id = oTipoPlan.TipoPlanId });
+                    }
+                }
 
-                return RedirectToAction("Index");
+                return View(oTipoPlan);
             }
-            catch
+            catch (Exception exp)
             {
-                return View();
+                return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = exp.Message });
             }
         }
 

@@ -333,6 +333,8 @@
     <Content Include="Views\CenCosGrupo\Delete.cshtml" />
     <Content Include="Views\CenCosGrupo\Details.cshtml" />
     <Content Include="Views\TipoPlanCarlos\Index.cshtml" />
+    <Content Include="Views\TipoPlanCarlos\Details.cshtml" />
+    <Content Include="Views\TipoPlanCarlos\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

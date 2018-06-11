@@ -15,9 +15,12 @@ namespace Contabilidad.Controllers.Carlos
     [SessionExpireFilter]
     public class TipoPlanCarlosController : Controller
     {
+        private clsTipoPlanCarlos oDAC = new clsTipoPlanCarlos(clsAppInfo.Connection);
+
         // GET: TipoPlanCarlos
         public ActionResult Index()
         {
+            this.GetDefaultData();
             return View();
         }
 
@@ -32,7 +35,7 @@ namespace Contabilidad.Controllers.Carlos
         {
             List<clsTipoPlanVMCarlos> list = new List<clsTipoPlanVMCarlos>();
 
-            clsTipoPlanCarlos oDAC = new clsTipoPlanCarlos(clsAppInfo.Connection);
+            
             oDAC.SelectFilter = clsTipoPlanCarlos.SelectFilters.Grid;
             oDAC.WhereFilter = clsTipoPlanCarlos.WhereFilters.Grid;
             oDAC.OrderByFilter = clsTipoPlanCarlos.OrderByFilters.Grid;
@@ -57,18 +60,42 @@ namespace Contabilidad.Controllers.Carlos
         // GET: TipoPlanCarlos/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            this.GetDefaultData();
+
+            try
+            {
+
+                if (ReferenceEquals(id, null))
+                {
+                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Índice nulo o no encontrado" });
+                }
+
+                clsTipoPlanVMCarlos oVM = oDAC.FindByPK(SysData.ToLong(id));
+
+                if (ReferenceEquals(oVM, null))
+                {
+                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Tipo de Plan no encontrado" });
+                }
+
+                return View(oVM);
+
+            }
+            catch (Exception exp) {
+                return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = exp.Message });
+            }
         }
 
         // GET: TipoPlanCarlos/Create
         public ActionResult Create()
         {
+            this.GetDefaultData();
+
             return View();
         }
 
         // POST: TipoPlanCarlos/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(clsTipoPlanVMCarlos oTipoPlan)
         {
             try
             {

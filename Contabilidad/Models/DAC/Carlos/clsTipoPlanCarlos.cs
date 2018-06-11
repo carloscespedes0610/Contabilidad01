@@ -245,14 +245,14 @@ namespace Contabilidad.Models.DAC.Carlos
                     strSQL = " SELECT  " +
                            "    ctbTipoPlan.TipoPlanId, " +             //usar espacio
                            "    ctbTipoPlan.TipoPlanDes, " +
-                           "    ctbTipoPlan.EstadoId, " +
+                           "    ctbTipoPlan.EstadoId " +
                            " FROM ctbTipoPlan ";
                     break;
 
                 case SelectFilters.ListBox:
                     strSQL = " SELECT  " +
                            "    ctbTipoPlan.TipoPlanId, " +
-                           "    ctbTipoPlan.TipoPlanDes, " +
+                           "    ctbTipoPlan.TipoPlanDes " +
                            " FROM ctbTipoPlan ";
                     break;
 
@@ -388,6 +388,13 @@ namespace Contabilidad.Models.DAC.Carlos
                         VM.TipoPlanDes = SysData.ToStr(oDataRow[clsTipoPlanVMCarlos._TipoPlanDes]);
                         break;
 
+                    case SelectFilters.Grid:
+                        VM.TipoPlanId = SysData.ToLong(oDataRow[clsTipoPlanVMCarlos._TipoPlanId]);
+                        VM.TipoPlanDes = SysData.ToStr(oDataRow[clsTipoPlanVMCarlos._TipoPlanDes]);
+                        VM.EstadoId = SysData.ToLong(oDataRow[clsTipoPlanVMCarlos._EstadoId]);
+                        VM.EstadoDes = SysData.ToStr(oDataRow[clsTipoPlanVMCarlos._EstadoDes]);
+                        break;
+
                 }
             }
 
@@ -406,22 +413,21 @@ namespace Contabilidad.Models.DAC.Carlos
 
         }
 
-        public bool FindByPK()
+        public clsTipoPlanVMCarlos FindByPK(long id)
         {
-            bool returnValue = false;
-            returnValue = false;
-
             try
             {
                 mintSelectFilter = SelectFilters.All;
                 mintWhereFilter = WhereFilters.PrimaryKey;
                 mintOrderByFilter = OrderByFilters.None;
 
+                VM.TipoPlanId = id;
+
                 if (Open())
                 {
                     if (Read())
                     {
-                        returnValue = true;
+                        return VM;
                     }
                 }
             }
@@ -431,7 +437,7 @@ namespace Contabilidad.Models.DAC.Carlos
                 throw (exp);
             }
 
-            return returnValue;
+            return null;
         }
 
         public void FilterInit()

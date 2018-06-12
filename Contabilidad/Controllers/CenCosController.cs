@@ -294,7 +294,7 @@ namespace Contabilidad.Controllers
 
             try
             {
-                oCenCos.VM.CenCosId = lngCenCosId;
+                oCenCos.VM.CenCosId = lngCenCosId;        
 
                 if (oCenCos.FindByPK())
                 {

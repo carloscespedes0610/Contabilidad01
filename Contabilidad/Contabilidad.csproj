@@ -337,6 +337,9 @@
     <Content Include="Views\TipoPlanCarlos\Create.cshtml" />
     <Content Include="Views\TipoPlanCarlos\Edit.cshtml" />
     <Content Include="Views\TipoPlanCarlos\Delete.cshtml" />
+    <Content Include="Views\PlanGrupoTipoCarlos\Index.cshtml" />
+    <Content Include="Views\PlanGrupoTipoCarlos\Details.cshtml" />
+    <Content Include="Views\PlanGrupoTipoCarlos\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -362,6 +365,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\Carlos\PlanGrupoTipoCarlosController.cs" />
     <Compile Include="Controllers\Carlos\TipoPlanCarlosController.cs" />
     <Compile Include="Controllers\CenCosController.cs" />
     <Compile Include="Controllers\CenCosGrupoController.cs" />
@@ -378,6 +382,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DAC\Carlos\clsCenCosCarlos.cs" />
+    <Compile Include="Models\DAC\Carlos\clsPlanGrupoTipoCarlos.cs" />
     <Compile Include="Models\DAC\Carlos\clsTipoPlanCarlos.cs" />
     <Compile Include="Models\DAC\clsAplicacion.cs" />
     <Compile Include="Models\DAC\clsAppInfo.cs" />
@@ -406,6 +411,7 @@
     <Compile Include="Models\Modules\ComboBox.cs" />
     <Compile Include="Models\Modules\SysData.cs" />
     <Compile Include="Controllers\ApiControllers\PlanGrupoDetVMController.cs" />
+    <Compile Include="Models\VM\Carlos\clsPlanGrupoTipoVMCarlos.cs" />
     <Compile Include="Models\VM\Carlos\clsTipoPlanVMCarlos.cs" />
     <Compile Include="Models\VM\clsCenCosVM.cs" />
     <Compile Include="Models\VM\clsCenCosGrupoVM.cs" />

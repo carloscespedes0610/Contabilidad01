@@ -1,0 +1,48 @@
+﻿@model Contabilidad.Models.VM.Carlos.clsPlanGrupoTipoVMCarlos
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Nuevo Tipo Plan Grupo</h3>
+                </div>
+
+                <div class="box-body">
+                    @using (Html.BeginForm())
+                    {
+                        using (Html.DevExtreme().ValidationGroup())
+                        {
+                            @Html.AntiForgeryToken();
+
+                            @(Html.DevExtreme().Form<Contabilidad.Models.VM.Carlos.clsPlanGrupoTipoVMCarlos>()
+                                                .ShowValidationSummary(true)
+                                                .Items(items =>
+                                                {
+
+                                                    items.AddGroup()
+                                                    .Items(groupItems =>
+                                                    {
+                                                        groupItems.AddSimpleFor(m => m.PlanGrupoTipoCod).Editor(e => e.TextBox().Placeholder("ej: ExC")).IsRequired(true);
+                                                        groupItems.AddSimpleFor(m => m.PlanGrupoTipoDes).Editor(e => e.TextBox().Placeholder("ej: Exigibles por Cobrar")).IsRequired(true);
+                                                        groupItems.AddSimpleFor(m => m.PlanGrupoTipoEsp).Editor(e => e.TextBox().Placeholder("ej: Saldo pendientes que falta por cobrar")).IsRequired(true);
+                                                        groupItems.AddSimpleFor(m => m.EstadoId).Editor(e => e.SelectBox().DataSource(d => d.Mvc().Controller("ComboBox").LoadAction("EstadoList").Key("EstadoId")).ValueExpr("EstadoId").DisplayExpr("EstadoDes").SearchEnabled(true).ShowClearButton(true).Disabled(false)).IsRequired(true);
+                                                    });
+                                                })
+                                        .FormData(Model)
+                            )
+
+                            <div Class="box-footer">
+                                <Button type="submit" Class="btn btn-primary"><i Class="fa fa-floppy-o"></i></Button>
+                                <a href="@Url.Action("Index", "PlanGrupoTipoCarlos")" Class="btn btn-default"><i Class="fa fa-reply"></i></a>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

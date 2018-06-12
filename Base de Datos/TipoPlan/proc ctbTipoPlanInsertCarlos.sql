@@ -20,7 +20,7 @@ BEGIN
 		INSERT INTO ctbTipoPlan(TipoPlanDes, EstadoId)
 					VALUES (@TipoPlanDes,@EstadoId)
 	
-		SET @Id = 10
+		SET @Id = SCOPE_IDENTITY()
 	END
 	ELSE
 	BEGIN

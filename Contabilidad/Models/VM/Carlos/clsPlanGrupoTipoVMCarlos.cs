@@ -13,17 +13,17 @@ namespace Contabilidad.Models.VM.Carlos
         public long PlanGrupoTipoId { get; set; }
 
         [Required, StringLength(50)]
-        [Display(Name = "Código", Prompt = "ej: EX",Description = "Es Necesario definir un Código para el Tipo de Plan Grupo" )]
+        [Display(Name = "Código" )]
         [DataType(DataType.Text)]
         public string PlanGrupoTipoCod { get; set; }
 
         [Required, StringLength(255)]
-        [Display(Name = "Descripción", Prompt = "ej: Exigible por Cobrar", Description ="Es necesario definir una Descripción para el Tipo de Plan Grupo")]
+        [Display(Name = "Descripción")]
         [DataType(DataType.Text)]
         public string PlanGrupoTipoDes { get; set; }
 
-        [Required, StringLength(255)]
-        [Display(Name = "Especificación", Prompt = "ej: Cuentas pendiente de pago hacia nosotros", Description = "Puede dejarse vacio")]
+        [StringLength(255)]
+        [Display(Name = "Especificación")]
         [DataType(DataType.Text)]
         public string PlanGrupoTipoEsp { get; set; }
 

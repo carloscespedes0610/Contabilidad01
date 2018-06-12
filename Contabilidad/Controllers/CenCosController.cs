@@ -1,5 +1,4 @@
 ﻿using Contabilidad.Models.DAC;
-using Contabilidad.Models.DAC.Carlos;
 using Contabilidad.Models.VM;
 using DevExtreme.AspNet.Mvc;
 using Newtonsoft.Json;
@@ -57,7 +56,7 @@ namespace Contabilidad.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    clsCenCosCarlos oCenCos = new clsCenCosCarlos(clsAppInfo.Connection);
+                    clsCenCos oCenCos = new clsCenCos(clsAppInfo.Connection);
                     DataMove(oCenCosVM, oCenCos, false);
 
                     if (oCenCos.Insert())
@@ -113,7 +112,7 @@ namespace Contabilidad.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    clsCenCosCarlos oCenCos = new clsCenCosCarlos(clsAppInfo.Connection);
+                    clsCenCos oCenCos = new clsCenCos(clsAppInfo.Connection);
                     DataMove(oCenCosVM, oCenCos, true);
 
                     if (oCenCos.Update())
@@ -230,7 +229,7 @@ namespace Contabilidad.Controllers
 
 
 
-        private void DataMove(clsCenCosVM oCenCosVM, clsCenCosCarlos oCenCos, bool boolEditing)
+        private void DataMove(clsCenCosVM oCenCosVM, clsCenCos oCenCos, bool boolEditing)
         {
             if (boolEditing)
             {
@@ -246,14 +245,22 @@ namespace Contabilidad.Controllers
 
         private List<clsCenCosVM> CenCosGrid()
         {
-            clsCenCosCarlos oCenCos = new clsCenCosCarlos(clsAppInfo.Connection);
+            clsCenCos oCenCos = new clsCenCos(clsAppInfo.Connection);
             List<clsCenCosVM> oCenCosVM = new List<clsCenCosVM>();
 
             try
             {
-                oCenCos.SelectFilter = clsCenCosCarlos.SelectFilters.Grid;
-                oCenCos.WhereFilter = clsCenCosCarlos.WhereFilters.Grid;
-                oCenCos.OrderByFilter = clsCenCosCarlos.OrderByFilters.Grid;
+                oCenCos.SelectFilter = clsCenCos.SelectFilters.Grid;
+                oCenCos.WhereFilter = clsCenCos.WhereFilters.Grid;
+                oCenCos.OrderByFilter = clsCenCos.OrderByFilters.Grid;
+
+                //oCenCos.SelectFilter = clsCenCos.SelectFilters.All;
+                //oCenCos.WhereFilter = clsCenCos.WhereFilters.CenCosCod;
+                //oCenCos.VM.CenCosCod = "PUE";
+
+                //if (oCenCos.Find())
+                //{
+                //}
 
                 if (oCenCos.Open())
                 {
@@ -289,16 +296,16 @@ namespace Contabilidad.Controllers
 
         private clsCenCosVM CenCosFind(long lngCenCosId)
         {
-            clsCenCosCarlos oCenCos = new clsCenCosCarlos(clsAppInfo.Connection);
+            clsCenCos oCenCos = new clsCenCos(clsAppInfo.Connection);
             clsCenCosVM oCenCosVM = new clsCenCosVM();
 
             try
             {
-                oCenCos.VM.CenCosId = lngCenCosId;        
+                oCenCos.VM.CenCosId = lngCenCosId;
 
                 if (oCenCos.FindByPK())
                 {
-                    oCenCosVM.CenCosId =  oCenCos.VM.CenCosId;
+                    oCenCosVM.CenCosId = oCenCos.VM.CenCosId;
                     oCenCosVM.CenCosCod = oCenCos.VM.CenCosCod;
                     oCenCosVM.CenCosDes = oCenCos.VM.CenCosDes;
                     oCenCosVM.CenCosEsp = oCenCos.VM.CenCosEsp;

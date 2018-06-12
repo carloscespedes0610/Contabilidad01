@@ -348,10 +348,10 @@ namespace Contabilidad.Models.DAC.Carlos
                     mstrStoreProcName = "Carlos.ctbPlanGrupoTipoInsertCarlos";
                     moParameters = new SqlParameter[5] {
                         new SqlParameter("@Id", SqlDbType.Int),
-                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoCod, VM.PlanGrupoTipoCod),
-                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoDes, VM.PlanGrupoTipoDes),
-                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoEsp, VM.PlanGrupoTipoEsp),
-                        new SqlParameter(clsPlanGrupoTipoVMCarlos._EstadoId, VM.EstadoId)};
+                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoCod, SysData.ToLong(VM.PlanGrupoTipoCod)),
+                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoDes, SysData.ToStr(VM.PlanGrupoTipoDes)),
+                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoEsp, SysData.ToStr(VM.PlanGrupoTipoEsp)),
+                        new SqlParameter(clsPlanGrupoTipoVMCarlos._EstadoId, SysData.ToLong(VM.EstadoId))};
                     moParameters[0].Direction = ParameterDirection.Output;
                     break;
             }
@@ -364,11 +364,11 @@ namespace Contabilidad.Models.DAC.Carlos
                 case UpdateFilters.All:
                     mstrStoreProcName = "Carlos.ctbPlanGrupoTipoUpdateCarlos";
                     moParameters = new SqlParameter[5] {
-                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoId, VM.PlanGrupoTipoId),
-                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoCod, VM.PlanGrupoTipoCod),
-                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoDes, VM.PlanGrupoTipoDes),
-                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoEsp, VM.PlanGrupoTipoEsp),
-                        new SqlParameter(clsPlanGrupoTipoVMCarlos._EstadoId, VM.EstadoId)};
+                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoId, SysData.ToLong(VM.PlanGrupoTipoId)),
+                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoCod, SysData.ToStr(VM.PlanGrupoTipoCod)),
+                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoDes, SysData.ToStr(VM.PlanGrupoTipoDes)),
+                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoEsp, SysData.ToStr(VM.PlanGrupoTipoEsp)),
+                        new SqlParameter(clsPlanGrupoTipoVMCarlos._EstadoId, SysData.ToLong(VM.EstadoId))};
                     break;
             }
         }
@@ -380,7 +380,7 @@ namespace Contabilidad.Models.DAC.Carlos
                 case DeleteFilters.All:
                     mstrStoreProcName = "Carlos.ctbPlanGrupoTipoDeleteCarlos";
                     moParameters = new SqlParameter[1] {
-                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoId, VM.PlanGrupoTipoId)};
+                        new SqlParameter(clsPlanGrupoTipoVMCarlos._PlanGrupoTipoId, SysData.ToLong(VM.PlanGrupoTipoId))};
                     break;
             }
         }

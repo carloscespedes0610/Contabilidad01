@@ -21,7 +21,8 @@ BEGIN
 	BEGIN
 		IF NOT EXISTS ( SELECT PlanGrupoTipoCod
 						FROM ctbPlanGrupoTipo	 
-						WHERE PlanGrupoTipoCod = @PlanGrupoTipoCod)
+						WHERE PlanGrupoTipoCod = @PlanGrupoTipoCod
+							AND PlanGrupoTipoId <> @PlanGrupoTipoId)
 		BEGIN
 			UPDATE  ctbPlanGrupoTipo
 			SET		PlanGrupoTipoCod = @PlanGrupoTipoCod,
@@ -44,5 +45,5 @@ BEGIN
 END
 
 --****************************************************************
-exec Carlos.ctbPlanGrupoTipoUpdateCarlos 4,'cacs mod','Carlos Cespedes mod','Carlos Alberto Cespedes Soliz mod', 100
+exec Carlos.ctbPlanGrupoTipoUpdateCarlos 5,'cacs m','Carlos Cespedes m','Carlos Alberto Cespedes Soliz mo', 100
 select * from ctbPlanGrupoTipo

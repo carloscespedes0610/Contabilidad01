@@ -1,5 +1,7 @@
 ﻿using Contabilidad.Models.DAC;
+using Contabilidad.Models.DAC.Carlos;
 using Contabilidad.Models.VM;
+using Contabilidad.Models.VM.Carlos;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -466,6 +468,50 @@ namespace Contabilidad.Models.Modules
             }
 
             return ((IEnumerable<clsTipoPersonaVM>)oTipoPersonaVM);
+        }
+
+        //-------carlos------------
+
+        public static List<clsPlanGrupoTipoDetVMCarlos> PlanGrupoTipoDetCarlosList(long lngPlanGrupoTipoId)
+        {
+            clsPlanGrupoTipoDetCarlos oPlanGrupoDet = new clsPlanGrupoTipoDetCarlos(clsAppInfo.Connection);
+            List<clsPlanGrupoTipoDetVMCarlos> oPlanGrupoDetVM = new List<clsPlanGrupoTipoDetVMCarlos>();
+
+            try
+            {
+                oPlanGrupoDet.SelectFilter = clsPlanGrupoTipoDetCarlos.SelectFilters.All;
+                oPlanGrupoDet.WhereFilter = clsPlanGrupoTipoDetCarlos.WhereFilters.PlanGrupoTipoId;
+                oPlanGrupoDet.OrderByFilter = clsPlanGrupoTipoDetCarlos.OrderByFilters.PlanGrupoTipoCod;
+                oPlanGrupoDet.VM.PlanGrupoTipoId = lngPlanGrupoTipoId;
+
+                if (oPlanGrupoDet.Open())
+                {
+                    foreach (DataRow dr in oPlanGrupoDet.DataSet.Tables[oPlanGrupoDet.TableName].Rows)
+                    {
+                        oPlanGrupoDetVM.Add(new clsPlanGrupoTipoDetVMCarlos()
+                        {
+                            PlanGrupoTipoDetId = SysData.ToLong(dr[clsPlanGrupoTipoDetVMCarlos._PlanGrupoTipoDetId]),
+                            PlanGrupoTipoDetCod = SysData.ToStr(dr[clsPlanGrupoTipoDetVMCarlos._PlanGrupoTipoDetCod]),
+                            PlanGrupoTipoDetDes = SysData.ToStr(dr[clsPlanGrupoTipoDetVMCarlos._PlanGrupoTipoDetDes]),
+                            PlanGrupoTipoDetEsp = SysData.ToStr(dr[clsPlanGrupoTipoDetVMCarlos._PlanGrupoTipoDetEsp]),
+                            PlanGrupoTipoId = SysData.ToLong(dr[clsPlanGrupoTipoDetVMCarlos._PlanGrupoTipoId]),
+                            EstadoId = SysData.ToLong(dr[clsPlanGrupoTipoDetVMCarlos._EstadoId])
+                        });
+                    }
+                }
+            }
+
+            catch (Exception exp)
+            {
+                throw (exp);
+
+            }
+            finally
+            {
+                oPlanGrupoDet.Dispose();
+            }
+
+            return (oPlanGrupoDetVM);
         }
 
     }

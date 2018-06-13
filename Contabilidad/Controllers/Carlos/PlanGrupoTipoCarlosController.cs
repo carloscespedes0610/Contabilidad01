@@ -1,5 +1,6 @@
 ﻿using Contabilidad.Models.DAC;
 using Contabilidad.Models.DAC.Carlos;
+using Contabilidad.Models.Modules;
 using Contabilidad.Models.VM.Carlos;
 using DevExtreme.AspNet.Mvc;
 using Newtonsoft.Json;
@@ -14,16 +15,96 @@ namespace Contabilidad.Controllers.Carlos
 {
     [SessionExpireFilter]
     public class PlanGrupoTipoCarlosController : Controller
-    {   
+    {
+        string SessionKey = "clsPlanGrupoTipoDetVMCarlos";
+
         // GET: PlanGrupoTipoCarlos
         public ActionResult Index()
         {
-            this.GetDefaultData();
-
-            return View();
+            return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Index prohibido" });
         }
 
-       
+        // GET: PlanGrupoTipoCarlos/Create
+        public ActionResult Create()
+        {
+            this.GetDefaultData();
+            try
+            {
+                clsPlanGrupoTipoFormVMCarlos oPlanGrupoTipoFormVM = new clsPlanGrupoTipoFormVMCarlos();
+                Session[SessionKey] = null;
+
+                DataInit(oPlanGrupoTipoFormVM);
+                ViewBagLoad();
+
+                return View(oPlanGrupoTipoFormVM);
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        // POST: PlanGrupoTipoCarlos/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(clsPlanGrupoTipoFormVMCarlos oPlanGrupoTipoForm)
+        {
+            this.GetDefaultData();
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    clsPlanGrupoTipoCarlos oPlanGrupoTipo = new clsPlanGrupoTipoCarlos(clsAppInfo.Connection);
+                    clsPlanGrupoTipoDetCarlos oPlanGrupoTipoDet = new clsPlanGrupoTipoDetCarlos(clsAppInfo.Connection);
+                    long lngRowCount = 0;
+
+                    DataMove(oPlanGrupoTipoForm, oPlanGrupoTipo, false);
+                    oPlanGrupoTipo.BeginTransaction();
+
+                    if (oPlanGrupoTipo.Insert())
+                    {
+                        var oPlanGrupoTipoDetVMList = (List<clsPlanGrupoTipoDetVMCarlos>)Session[SessionKey];
+                      //  oPlanGrupoTipo.VM.PlanGrupoTipoId = oPlanGrupoTipo.Id;
+                        oPlanGrupoTipoDet.Transaction = oPlanGrupoTipo.Transaction;
+
+                        foreach (clsPlanGrupoTipoDetVMCarlos oPlanGrupoDetVM in oPlanGrupoTipoDetVMList)
+                        {
+                            DataMoveDet(oPlanGrupoTipo, oPlanGrupoDetVM, oPlanGrupoTipoDet, false);
+
+                            if (oPlanGrupoTipoDet.Insert())
+                            {
+                                lngRowCount += 1;
+                            }
+                        }
+
+                        if (oPlanGrupoTipoDetVMList.Count == lngRowCount)
+                        {
+                            oPlanGrupoTipo.Commit();
+                            Session[SessionKey] = null;
+                            return RedirectToAction("Index");
+                        }
+                    }
+
+                    oPlanGrupoTipo.Rollback();
+                }
+
+                ViewBagLoad();
+                return View(oPlanGrupoTipoForm);
+            }
+            catch (Exception exp)
+            {
+                return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = exp.Message });
+            }
+        }
+
+        // --------------------------------------***********************************************************************************************---------------------
+
+
+
 
         // GET: PlanGrupoTipoCarlos/Details/5
         public ActionResult Details(int? id)
@@ -54,39 +135,7 @@ namespace Contabilidad.Controllers.Carlos
 
         }
 
-        // GET: PlanGrupoTipoCarlos/Create
-        public ActionResult Create()
-        {
-            this.GetDefaultData();
-            return View();
-        }
-
-        // POST: PlanGrupoTipoCarlos/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(clsPlanGrupoTipoVMCarlos oPlanGrupoTipo)
-        {
-            this.GetDefaultData();
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    clsPlanGrupoTipoCarlos oDAC = new clsPlanGrupoTipoCarlos(clsAppInfo.Connection);
-                    oDAC.VM = oPlanGrupoTipo;
-
-                    if (oDAC.Insert()) {
-                        return RedirectToAction("Index");
-                    }
-                }
-
-                return View(oPlanGrupoTipo);
-            }
-            catch(Exception exp)
-            {
-                return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = exp.Message });
-            }
-        }
-
+       
         // GET: PlanGrupoTipoCarlos/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -226,6 +275,48 @@ namespace Contabilidad.Controllers.Carlos
                 }
             }
             return list;
+        }
+
+        private void DataInit(clsPlanGrupoTipoFormVMCarlos oPlanGrupoTipoFormVM)
+        {
+            oPlanGrupoTipoFormVM.PlanGrupoTipoId = 0;
+            oPlanGrupoTipoFormVM.PlanGrupoTipoCod = "";
+            oPlanGrupoTipoFormVM.PlanGrupoTipoDes = "";
+            oPlanGrupoTipoFormVM.PlanGrupoTipoEsp = "";
+            oPlanGrupoTipoFormVM.EstadoId = ConstEstado.Activo;
+        }
+
+        private void ViewBagLoad()
+        {
+            ViewBag.EstadoId = ComboBox.EstadoList();
+        }
+
+        private void DataMove(clsPlanGrupoTipoFormVMCarlos oPlanGrupoTipoFormVM, clsPlanGrupoTipoCarlos oPlanGrupoTipo, bool boolEditing)
+        {
+            if (boolEditing)
+            {
+                oPlanGrupoTipo.VM.PlanGrupoTipoId = SysData.ToLong(oPlanGrupoTipoFormVM.PlanGrupoTipoId);
+            }
+
+            oPlanGrupoTipo.VM.PlanGrupoTipoCod = SysData.ToStr(oPlanGrupoTipoFormVM.PlanGrupoTipoCod);
+            oPlanGrupoTipo.VM.PlanGrupoTipoDes = SysData.ToStr(oPlanGrupoTipoFormVM.PlanGrupoTipoDes);
+            oPlanGrupoTipo.VM.PlanGrupoTipoEsp = SysData.ToStr(oPlanGrupoTipoFormVM.PlanGrupoTipoEsp);
+            oPlanGrupoTipo.VM.EstadoId = SysData.ToLong(oPlanGrupoTipoFormVM.EstadoId);
+        }
+
+        private void DataMoveDet(clsPlanGrupoTipoCarlos oPlanGrupoTipoDAC, clsPlanGrupoTipoDetVMCarlos oPlanGrupoTipoDetVM, clsPlanGrupoTipoDetCarlos oPlanGrupoTipoDetDAC, bool boolEditing)
+        {
+            if (boolEditing)
+            {
+                oPlanGrupoTipoDetDAC.VM.PlanGrupoTipoDetId = SysData.ToLong(oPlanGrupoTipoDetVM.PlanGrupoTipoDetId);
+            }
+
+            oPlanGrupoTipoDetDAC.VM.PlanGrupoTipoDetCod = SysData.ToStr(oPlanGrupoTipoDetVM.PlanGrupoTipoDetCod);
+            oPlanGrupoTipoDetDAC.VM.PlanGrupoTipoDetDes = SysData.ToStr(oPlanGrupoTipoDetVM.PlanGrupoTipoDetDes);
+            oPlanGrupoTipoDetDAC.VM.PlanGrupoTipoDetEsp = SysData.ToStr(oPlanGrupoTipoDetVM.PlanGrupoTipoDetEsp);
+            oPlanGrupoTipoDetDAC.VM.PlanGrupoTipoId = SysData.ToLong(oPlanGrupoTipoDAC.VM.PlanGrupoTipoId);
+            oPlanGrupoTipoDetDAC.VM.EstadoId = SysData.ToLong(oPlanGrupoTipoDAC.VM.EstadoId);
+
         }
     }
 }

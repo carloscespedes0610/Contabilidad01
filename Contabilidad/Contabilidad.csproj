@@ -344,6 +344,8 @@
     <Content Include="Views\PlanGrupoTipoCarlos\antiguo\Delete.cshtml" />
     <Content Include="Views\PlanGrupoTipoDet\Index.cshtml" />
     <Content Include="Views\PlanGrupoTipoCarlos\Create.cshtml" />
+    <Content Include="Views\PlanGrupoTipoCarlos\Details.cshtml" />
+    <Content Include="Views\PlanGrupoTipoCarlos\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -371,8 +373,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ApiControllers\PlanGrupoTipoDetVMCarlosController.cs" />
     <Compile Include="Controllers\Carlos\PlanGrupoTipoCarlosController.cs" />
-    <Compile Include="Controllers\Carlos\PlanGrupoTipoDetController.cs" />
-    <Compile Include="Controllers\Carlos\TipoPlanCarlosController.cs" />
     <Compile Include="Controllers\CenCosController.cs" />
     <Compile Include="Controllers\CenCosGrupoController.cs" />
     <Compile Include="Controllers\ComboBoxController.cs" />

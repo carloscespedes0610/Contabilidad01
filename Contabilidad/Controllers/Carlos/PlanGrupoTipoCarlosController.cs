@@ -21,7 +21,20 @@ namespace Contabilidad.Controllers.Carlos
         // GET: PlanGrupoTipoCarlos
         public ActionResult Index()
         {
-            return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Index prohibido" });
+            this.GetDefaultData();
+
+            try
+            {
+                //var lstPlanGrupoTipo = PlanGrupoTipoGrid();
+                //return View(lstPlanGrupoTipo);
+                return View();
+            }
+            catch (Exception exp)
+            {
+
+                return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = exp.Message });
+            }
+
         }
 
         // GET: PlanGrupoTipoCarlos/Create
@@ -118,15 +131,17 @@ namespace Contabilidad.Controllers.Carlos
                     return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Índice nulo o no encontrado" });
                 }
 
-                clsPlanGrupoTipoCarlos oDAC = new clsPlanGrupoTipoCarlos(clsAppInfo.Connection);
-                clsPlanGrupoTipoVMCarlos VM = oDAC.FindByPK(SysData.ToLong(id));
+                Session[SessionKey] = null;
 
-                if (ReferenceEquals(VM, null))
+                clsPlanGrupoTipoFormVMCarlos oPlanGrupoTipoFormVM = PlanGrupoTipoFormFind(SysData.ToLong(id));
+
+                if (ReferenceEquals(oPlanGrupoTipoFormVM, null))
                 {
-                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "no encontrado" });
+                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Índice no encontrado" });
                 }
 
-                return View(VM);
+                ViewBagLoad();
+                return View(oPlanGrupoTipoFormVM);
             }
             catch (Exception exp)
             {
@@ -146,14 +161,7 @@ namespace Contabilidad.Controllers.Carlos
                     return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "indice nulo o no encontrado" });
                 }
 
-                clsPlanGrupoTipoCarlos oDAC = new clsPlanGrupoTipoCarlos(clsAppInfo.Connection);
-                clsPlanGrupoTipoVMCarlos oVM = oDAC.FindByPK(SysData.ToLong(id));
-
-                if (ReferenceEquals(oVM, null)) {
-                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "no encontrado" });
-                }
-
-                return View(oVM);
+                return View();
 
             }
             catch (Exception exp)
@@ -196,15 +204,9 @@ namespace Contabilidad.Controllers.Carlos
                     return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "indice nulo o no encontrado" });
                 }
 
-                clsPlanGrupoTipoCarlos oDAC = new clsPlanGrupoTipoCarlos(clsAppInfo.Connection);
-                clsPlanGrupoTipoVMCarlos oVM = oDAC.FindByPK(SysData.ToLong(id));
+               
 
-                if (ReferenceEquals(oVM, null))
-                {
-                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "no encontrado" });
-                }
-
-                return View(oVM);
+                return View();
 
             }
             catch (Exception exp)
@@ -318,5 +320,64 @@ namespace Contabilidad.Controllers.Carlos
             oPlanGrupoTipoDetDAC.VM.EstadoId = SysData.ToLong(oPlanGrupoTipoDAC.VM.EstadoId);
 
         }
+
+        private clsPlanGrupoTipoFormVMCarlos PlanGrupoTipoFormFind(long lngPlanGrupoTipoId)
+        {
+            clsPlanGrupoTipoCarlos oPlanGrupoTipoDAC = new clsPlanGrupoTipoCarlos(clsAppInfo.Connection);
+            clsPlanGrupoTipoDetCarlos oPlanGrupoTipoDetDAC = new clsPlanGrupoTipoDetCarlos(clsAppInfo.Connection);
+            List<clsPlanGrupoTipoDetVMCarlos> oList_PlanGrupoTipoDetVM = new List<clsPlanGrupoTipoDetVMCarlos>();
+            clsPlanGrupoTipoFormVMCarlos oPlanGrupoTipoFormVM = new clsPlanGrupoTipoFormVMCarlos();
+
+            try
+            {
+                oPlanGrupoTipoDAC.VM.PlanGrupoTipoId = lngPlanGrupoTipoId;
+
+                if (oPlanGrupoTipoDAC.FindByPK())
+                {
+                    oPlanGrupoTipoFormVM.PlanGrupoTipoId = oPlanGrupoTipoDAC.VM.PlanGrupoTipoId;
+                    oPlanGrupoTipoFormVM.PlanGrupoTipoCod = oPlanGrupoTipoDAC.VM.PlanGrupoTipoCod;
+                    oPlanGrupoTipoFormVM.PlanGrupoTipoDes = oPlanGrupoTipoDAC.VM.PlanGrupoTipoDes;
+                    oPlanGrupoTipoFormVM.PlanGrupoTipoEsp = oPlanGrupoTipoDAC.VM.PlanGrupoTipoEsp;
+                    oPlanGrupoTipoFormVM.PlanGrupoTipoId = oPlanGrupoTipoDAC.VM.PlanGrupoTipoId;
+                    oPlanGrupoTipoFormVM.EstadoId = oPlanGrupoTipoDAC.VM.EstadoId;
+
+                    oPlanGrupoTipoDetDAC.SelectFilter = clsPlanGrupoTipoDetCarlos.SelectFilters.All;
+                    oPlanGrupoTipoDetDAC.WhereFilter = clsPlanGrupoTipoDetCarlos.WhereFilters.PlanGrupoTipoId;
+                    oPlanGrupoTipoDetDAC.OrderByFilter = clsPlanGrupoTipoDetCarlos.OrderByFilters.PlanGrupoTipoCod;
+                    oPlanGrupoTipoDetDAC.VM.PlanGrupoTipoId = lngPlanGrupoTipoId;
+
+                    if (oPlanGrupoTipoDetDAC.Open())
+                    {
+                        foreach (DataRow dr in oPlanGrupoTipoDetDAC.DataSet.Tables[oPlanGrupoTipoDetDAC.TableName].Rows)
+                        {
+                            oList_PlanGrupoTipoDetVM.Add(new clsPlanGrupoTipoDetVMCarlos()
+                            {
+                                PlanGrupoTipoDetId = SysData.ToLong(dr[clsPlanGrupoTipoDetVMCarlos._PlanGrupoTipoDetId]),
+                                PlanGrupoTipoDetCod = SysData.ToStr(dr[clsPlanGrupoTipoDetVMCarlos._PlanGrupoTipoDetCod]),
+                                PlanGrupoTipoDetDes = SysData.ToStr(dr[clsPlanGrupoTipoDetVMCarlos._PlanGrupoTipoDetDes]),
+                                PlanGrupoTipoDetEsp = SysData.ToStr(dr[clsPlanGrupoTipoDetVMCarlos._PlanGrupoTipoDetEsp]),
+                                PlanGrupoTipoId = SysData.ToLong(dr[clsPlanGrupoTipoDetVMCarlos._PlanGrupoTipoId]),
+                                EstadoId = SysData.ToLong(dr[clsPlanGrupoTipoDetVMCarlos._EstadoId]),
+                            });
+                        }
+
+                        oPlanGrupoTipoFormVM.PlanGrupoTipoDet = (ICollection<clsPlanGrupoTipoDetVMCarlos>)oList_PlanGrupoTipoDetVM;
+                        return oPlanGrupoTipoFormVM;
+                    }
+                }
+            }
+
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                oPlanGrupoTipoDAC.Dispose();
+            }
+
+            return null;
+        }
+
     }
 }

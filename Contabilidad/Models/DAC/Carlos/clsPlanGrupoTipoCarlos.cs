@@ -434,21 +434,22 @@ namespace Contabilidad.Models.DAC.Carlos
 
         }
 
-        public clsPlanGrupoTipoVMCarlos FindByPK(long id)
+        public bool FindByPK()
         {
+            bool returnValue = false;
+            returnValue = false;
+
             try
             {
                 mintSelectFilter = SelectFilters.All;
                 mintWhereFilter = WhereFilters.PrimaryKey;
                 mintOrderByFilter = OrderByFilters.None;
 
-                VM.PlanGrupoTipoId = id;
-
                 if (Open())
                 {
                     if (Read())
                     {
-                        return VM;
+                        returnValue = true;
                     }
                 }
             }
@@ -458,7 +459,7 @@ namespace Contabilidad.Models.DAC.Carlos
                 throw (exp);
             }
 
-            return null;
+            return returnValue;
         }
 
         public void FilterInit()

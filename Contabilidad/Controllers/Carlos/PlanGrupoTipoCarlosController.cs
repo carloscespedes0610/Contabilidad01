@@ -25,8 +25,6 @@ namespace Contabilidad.Controllers.Carlos
 
             try
             {
-                //var lstPlanGrupoTipo = PlanGrupoTipoGrid();
-                //return View(lstPlanGrupoTipo);
                 return View();
             }
             catch (Exception exp)
@@ -155,14 +153,25 @@ namespace Contabilidad.Controllers.Carlos
         public ActionResult Edit(int? id)
         {
             this.GetDefaultData();
+
             try
             {
-                if (ReferenceEquals(id, null)) {
-                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "indice nulo o no encontrado" });
+                if (ReferenceEquals(id, null))
+                {
+                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Índice nulo o no encontrado" });
                 }
 
-                return View();
+                Session[SessionKey] = null;
 
+                clsPlanGrupoTipoFormVMCarlos oPlanGrupoTipoFormVM = PlanGrupoTipoFormFind(SysData.ToLong(id));
+
+                if (ReferenceEquals(oPlanGrupoTipoFormVM, null))
+                {
+                    return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Índice no encontrado" });
+                }
+
+                ViewBagLoad();
+                return View(oPlanGrupoTipoFormVM);
             }
             catch (Exception exp)
             {
@@ -173,23 +182,65 @@ namespace Contabilidad.Controllers.Carlos
         // POST: PlanGrupoTipoCarlos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(clsPlanGrupoTipoVMCarlos oPlanGrupoTipo)
+        public ActionResult Edit(clsPlanGrupoTipoFormVMCarlos oPlanGrupoTipoForm)
         {
-            this.GetDefaultData();
+            clsPlanGrupoTipoCarlos oPlanGrupoTipoDAC = new clsPlanGrupoTipoCarlos(clsAppInfo.Connection);
+            clsPlanGrupoTipoDetCarlos oPlanGrupoTipoDetDAC = new clsPlanGrupoTipoDetCarlos(clsAppInfo.Connection);
+            long lngRowCount = 0;
+
             try
             {
-                if (ModelState.IsValid) {
-                    clsPlanGrupoTipoCarlos oDAC = new clsPlanGrupoTipoCarlos(clsAppInfo.Connection);
-                    oDAC.VM = oPlanGrupoTipo;
-                    if (oDAC.Update()) {
-                        return RedirectToAction("Details",new { id = oPlanGrupoTipo.PlanGrupoTipoId });
+                if (ModelState.IsValid)
+                {
+                    DataMove(oPlanGrupoTipoForm, oPlanGrupoTipoDAC, true);
+                    oPlanGrupoTipoDAC.BeginTransaction();
+
+                    if (oPlanGrupoTipoDAC.Update())
+                    {
+                        var oPlanGrupoDetVMList = (List<clsPlanGrupoTipoDetVMCarlos>)Session[SessionKey];
+
+                        oPlanGrupoTipoDetDAC.Transaction = oPlanGrupoTipoDAC.Transaction;
+
+                        foreach (clsPlanGrupoTipoDetVMCarlos oDetVM in oPlanGrupoDetVMList)
+                        {
+                            if (oDetVM.PlanGrupoTipoDetId == 0)  // si es un nuevo item
+                            {
+                                DataMoveDet(oPlanGrupoTipoDAC, oDetVM, oPlanGrupoTipoDetDAC, false);
+
+                                if (oPlanGrupoTipoDetDAC.Insert())
+                                    lngRowCount += 1;
+                            }
+                            else
+                            {
+                                DataMoveDet(oPlanGrupoTipoDAC, oDetVM, oPlanGrupoTipoDetDAC, true);
+
+                                if (oPlanGrupoTipoDetDAC.Update())
+                                    lngRowCount += 1;
+                            }
+                        }
+
+                        if (oPlanGrupoDetVMList.Count == lngRowCount)
+                        {
+                            oPlanGrupoTipoDAC.Commit();
+                            Session[SessionKey] = null;
+                            return RedirectToAction("Index");
+                        }
                     }
+
+                    oPlanGrupoTipoDAC.Rollback();
                 }
-                return View(oPlanGrupoTipo);
+
+                ViewBagLoad();
+                return View(oPlanGrupoTipoForm);
             }
-            catch(Exception exp)
+
+            catch (Exception exp)
             {
-                return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = exp.Message });
+                oPlanGrupoTipoDAC.Rollback();
+
+                ViewBagLoad();
+                ViewBag.MessageErr = exp.Message;
+                return View(oPlanGrupoTipoForm);
             }
         }
 
